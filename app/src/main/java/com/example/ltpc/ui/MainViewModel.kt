@@ -13,17 +13,29 @@ import com.example.ltpc.utils.TimeHelper
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
+enum class AppScreen {
+    HOME,
+    RECIPE,
+    FIESTA
+}
+
 class MainViewModel : ViewModel() {
 
     private val timeHelper = TimeHelper()
     private val beepHelper = BeepHelper()
 
-    private val mealApi = MealApiService.create()
-    private val cocktailApi = CocktailApiService.create()
-    private val pokeApi = PokeApiService.create()
+    private val mealApi by lazy { MealApiService.create() }
+    private val cocktailApi by lazy { CocktailApiService.create() }
+    private val pokeApi by lazy { PokeApiService.create() }
+
+    private val _currentScreen = MutableLiveData(AppScreen.HOME)
+    val currentScreen: LiveData<AppScreen> get() = _currentScreen
 
     private val _recipeState = MutableLiveData<RecipeUiModel?>()
     val recipeState: LiveData<RecipeUiModel?> get() = _recipeState
+
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> get() = _isLoading
 
     private val _isNightMode = MutableLiveData<Boolean>()
     val isNightMode: LiveData<Boolean> get() = _isNightMode
@@ -53,8 +65,16 @@ class MainViewModel : ViewModel() {
         playBeeps()
     }
 
+    fun navigateTo(screen: AppScreen) {
+        if (_currentScreen.value != screen) {
+            _currentScreen.value = screen
+            playBeeps()
+        }
+    }
+
     fun fetchMealWithPokemon() {
         viewModelScope.launch {
+            _isLoading.value = true
             try {
                 val mealResponse = mealApi.getRandomMeal()
                 val meal = mealResponse.meals?.firstOrNull()
@@ -73,12 +93,15 @@ class MainViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+            } finally {
+                _isLoading.value = false
             }
         }
     }
 
     fun fetchCocktailWithPokemon() {
         viewModelScope.launch {
+            _isLoading.value = true
             try {
                 val cocktailResponse = cocktailApi.getRandomCocktail()
                 val cocktail = cocktailResponse.meals?.firstOrNull()
@@ -97,6 +120,8 @@ class MainViewModel : ViewModel() {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
+            } finally {
+                _isLoading.value = false
             }
         }
     }
