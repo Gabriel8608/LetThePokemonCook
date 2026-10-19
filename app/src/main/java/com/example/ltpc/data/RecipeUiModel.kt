@@ -1,4 +1,4 @@
-package com.letthepokemancook.data
+package com.example.ltpc.data
 
 data class RecipeUiModel(
     val title: String,
