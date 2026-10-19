@@ -1,0 +1,223 @@
+               DIAGRAMA DE CLASES - LET THE POKEMON COOK
+
+===============================================================================
+
+
+
+-------------------------------------------------------------------------------
+
+1. PAQUETE: com.letthepokemancook.data
+
+-------------------------------------------------------------------------------
+
+
+
+ +-----------------------------------+
+
+ |          MealApiResponse          |
+
+ +-----------------------------------+
+
+ | - meals: List<MealDto>?           |
+
+ +-----------------------------------+
+
+
+
+ +-----------------------------------+
+
+ |              MealDto              |
+
+ +-----------------------------------+
+
+ | - strMeal: String?                |
+
+ | - strInstructions: String?        |
+
+ | - strMealThumb: String?           |
+
+ +-----------------------------------+
+
+
+
+ +-----------------------------------+
+
+ |        PokemonApiResponse         |
+
+ +-----------------------------------+
+
+ | - name: String                    |
+
+ | - sprites: SpritesDto             |
+
+ +-----------------------------------+
+
+
+
+ +-----------------------------------+
+
+ |            SpritesDto             |
+
+ +-----------------------------------+
+
+ | - front_default: String?          |
+
+ +-----------------------------------+
+
+
+
+ +-----------------------------------+
+
+ |           RecipeUiModel           |
+
+ +-----------------------------------+
+
+ | - title: String                   |
+
+ | - instructions: String            |
+
+ | - recipeImageUrl: String          |
+
+ | - pokemonName: String             |
+
+ | - pokemonImageUrl: String         |
+
+ +-----------------------------------+
+
+
+
+ <<Interface>>                         <<Interface>>
+
+ +-------------------------------+     +-------------------------------+
+
+ |        MealApiService         |     |      CocktailApiService       |
+
+ +-------------------------------+     +-------------------------------+
+
+ | + getRandomMeal():            |     | + getRandomCocktail():        |
+
+ |   MealApiResponse             |     |   MealApiResponse             |
+
+ +-------------------------------+     +-------------------------------+
+
+
+
+ <<Interface>>
+
+ +-------------------------------+
+
+ |        PokeApiService         |
+
+ +-------------------------------+
+
+ | + getPokemon(id: Int):        |
+
+ |   PokemonApiResponse          |
+
+ +-------------------------------+
+
+
+
+
+
+-------------------------------------------------------------------------------
+
+2. PAQUETE: com.letthepokemancook.utils
+
+-------------------------------------------------------------------------------
+
+
+
+ +-----------------------------------+
+
+ |            TimeHelper             |
+
+ +-----------------------------------+
+
+ | - hourOffset: Int                 |
+
+ +-----------------------------------+
+
+ | + getCurrentAdjustedHour(): Int   |
+
+ | + isNightTime(): Boolean          |
+
+ | + toggleOffset(): Unit            |
+
+ +-----------------------------------+
+
+
+
+
+
+-------------------------------------------------------------------------------
+
+3. PAQUETE: com.letthepokemancook.ui
+
+-------------------------------------------------------------------------------
+
+
+
+ +-------------------------------------------------------+
+
+ |                     MainViewModel                     |
+
+ +-------------------------------------------------------+
+
+ | - timeHelper: TimeHelper                              |
+
+ | - mealApi: MealApiService                             |
+
+ | - cocktailApi: CocktailApiService                     |
+
+ | - pokeApi: PokeApiService                             |
+
+ | - _recipeState: MutableLiveData<RecipeUiModel?>       |
+
+ | + recipeState: LiveData<RecipeUiModel?>               |
+
+ | - _isNightMode: MutableLiveData<Boolean>              |
+
+ | + isNightMode: LiveData<Boolean>                      |
+
+ +-------------------------------------------------------+
+
+ | + updateMode(): Unit                                  |
+
+ | + toggleTimeOffset(): Unit                            |
+
+ | + fetchMealWithPokemon(): Unit                        |
+
+ | + fetchCocktailWithPokemon(): Unit                    |
+
+ +-------------------------------------------------------+
+
+
+
+
+
+-------------------------------------------------------------------------------
+
+RELACIONES Y FLUJO PRINCIPAL
+
+-------------------------------------------------------------------------------
+
+
+
+ [ MainViewModel ] ─── usa ───> [ TimeHelper ]
+
+         │
+
+         ├─── realiza peticiones ───> [ MealApiService ]
+
+         ├─── realiza peticiones ───> [ CocktailApiService ]
+
+         └─── realiza peticiones ───> [ PokeApiService ]
+
+         │
+
+         └─── emite estado ─────────> [ RecipeUiModel ]
+
+
+
+===============================================================================
