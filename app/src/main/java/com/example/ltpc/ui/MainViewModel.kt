@@ -59,6 +59,10 @@ class MainViewModel : ViewModel() {
         _isNightMode.value = timeHelper.isNightTime()
     }
 
+    fun getFormattedCurrentTime(): String {
+        return timeHelper.getFormattedCurrentTime()
+    }
+
     fun toggleTimeOffset() {
         timeHelper.toggleOffset()
         updateMode()

@@ -1,6 +1,8 @@
 package com.example.ltpc.utils
 
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 class TimeHelper {
     var hourOffset: Int = 0
@@ -20,5 +22,12 @@ class TimeHelper {
 
     fun toggleOffset() {
         hourOffset = if (hourOffset == 0) 12 else 0
+    }
+
+    fun getFormattedCurrentTime(): String {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.HOUR_OF_DAY, hourOffset)
+        val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+        return sdf.format(calendar.time)
     }
 }

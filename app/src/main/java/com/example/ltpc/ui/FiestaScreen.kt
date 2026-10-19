@@ -1,6 +1,5 @@
 package com.example.ltpc.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,6 +42,7 @@ fun FiestaScreen(
     onFetchNext: () -> Unit,
     onBackToHome: () -> Unit
 ) {
+    val pokemonName = recipe?.pokemonName ?: "Pokémon"
     val purpleThemeColor = Color(0xFF673AB7)
 
     Column(
@@ -58,18 +57,9 @@ fun FiestaScreen(
             horizontalArrangement = Arrangement.Start
         ) {
             OutlinedButton(onClick = onBackToHome) {
-                Text("← Inicio")
+                Text("Menú principal")
             }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "🍹 Fiesta Time - Cócteles 🌙",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = purpleThemeColor
-        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -87,6 +77,56 @@ fun FiestaScreen(
                 modifier = Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
                 elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (recipe.pokemonImageUrl.isNotEmpty()) {
+                        AsyncImage(
+                            model = recipe.pokemonImageUrl,
+                            contentDescription = pokemonName,
+                            modifier = Modifier
+                                .size(96.dp)
+                                .clip(CircleShape)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = "$pokemonName apoya sus brazos, patas o… lo que sea, en la barra. Te mira con la sabiduría ancestral de un docente con 20 años de cansancio y desinterés y te dice:",
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "$pokemonName $pokemonName.",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = purpleThemeColor,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Parece que te ayudará a preparar tu propia bebida. Ni modo: toma la coctelera y anota, pokebecario.",
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
@@ -115,43 +155,6 @@ fun FiestaScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Pokémon Bartender Companion
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                purpleThemeColor.copy(alpha = 0.2f),
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                            .padding(12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        if (recipe.pokemonImageUrl.isNotEmpty()) {
-                            AsyncImage(
-                                model = recipe.pokemonImageUrl,
-                                contentDescription = recipe.pokemonName,
-                                modifier = Modifier
-                                    .size(64.dp)
-                                    .clip(CircleShape)
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Column {
-                            Text(
-                                text = "🍸 Bartender:",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                            Text(
-                                text = recipe.pokemonName,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
                     Text(
                         text = "Preparación:",
                         fontSize = 16.sp,
@@ -164,7 +167,8 @@ fun FiestaScreen(
                     Text(
                         text = recipe.instructions,
                         fontSize = 14.sp,
-                        textAlign = TextAlign.Justify
+                        textAlign = TextAlign.Justify,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -179,7 +183,7 @@ fun FiestaScreen(
                 .height(50.dp),
             colors = ButtonDefaults.buttonColors(containerColor = purpleThemeColor)
         ) {
-            Text("🍹 Obtener otro Cóctel")
+            Text("Me gustan las horas becarias")
         }
     }
 }

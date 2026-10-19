@@ -1,6 +1,5 @@
 package com.example.ltpc.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,11 +35,14 @@ import com.example.ltpc.data.RecipeUiModel
 
 @Composable
 fun RecipeScreen(
+    isNightMode: Boolean,
     recipe: RecipeUiModel?,
     isLoading: Boolean,
     onFetchNext: () -> Unit,
     onBackToHome: () -> Unit
 ) {
+    val pokemonName = recipe?.pokemonName ?: "Pokémon"
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -54,18 +55,9 @@ fun RecipeScreen(
             horizontalArrangement = Arrangement.Start
         ) {
             OutlinedButton(onClick = onBackToHome) {
-                Text("← Inicio")
+                Text("Menú principal")
             }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "🍲 Receta Pokémon Deliciosa",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -79,6 +71,56 @@ fun RecipeScreen(
                 CircularProgressIndicator()
             }
         } else if (recipe != null) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (recipe.pokemonImageUrl.isNotEmpty()) {
+                        AsyncImage(
+                            model = recipe.pokemonImageUrl,
+                            contentDescription = pokemonName,
+                            modifier = Modifier
+                                .size(96.dp)
+                                .clip(CircleShape)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text(
+                        text = if (!isNightMode) {
+                            "Tu master chef es $pokemonName."
+                        } else {
+                            "Un $pokemonName decide ayudarte esta noche."
+                        },
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = if (!isNightMode) {
+                            "$pokemonName te comparte sus conocimientos culinarios del día. Atiende y anota, poketonto."
+                        } else {
+                            "De chaqui o aguantando hasta el amanecer, da igual: $pokemonName te dará de comer, pokealcohólico."
+                        },
+                        fontSize = 14.sp,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -110,46 +152,8 @@ fun RecipeScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Pokémon Companion
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                MaterialTheme.colorScheme.primaryContainer,
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                            .padding(12.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        if (recipe.pokemonImageUrl.isNotEmpty()) {
-                            AsyncImage(
-                                model = recipe.pokemonImageUrl,
-                                contentDescription = recipe.pokemonName,
-                                modifier = Modifier
-                                    .size(64.dp)
-                                    .clip(CircleShape)
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Column {
-                            Text(
-                                text = "👨‍🍳 Cocinero Chef:",
-                                fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                            Text(
-                                text = recipe.pokemonName,
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
                     Text(
-                        text = "Instrucciones:",
+                        text = "Receta:",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.fillMaxWidth()
@@ -175,7 +179,7 @@ fun RecipeScreen(
                 .fillMaxWidth()
                 .height(50.dp)
         ) {
-            Text("🎲 Obtener otra Receta")
+            Text("Nueva receta")
         }
     }
 }

@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            LTPCTheme {
+            LTPCTheme(darkTheme = viewModel.isNightMode.observeAsState(false).value) {
                 MainApp(viewModel = viewModel)
             }
         }
@@ -41,41 +41,46 @@ fun MainApp(viewModel: MainViewModel) {
     val isNightMode by viewModel.isNightMode.observeAsState(false)
     val recipeState by viewModel.recipeState.observeAsState(null)
     val isLoading by viewModel.isLoading.observeAsState(false)
+    val currentTime = viewModel.getFormattedCurrentTime()
 
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            when (currentScreen) {
-                AppScreen.HOME -> {
-                    HomeScreen(
-                        isNightMode = isNightMode,
-                        onToggleNightMode = { viewModel.toggleTimeOffset() },
-                        onNavigateToRecipe = {
-                            viewModel.fetchMealWithPokemon()
-                            viewModel.navigateTo(AppScreen.RECIPE)
-                        },
-                        onNavigateToFiesta = {
-                            viewModel.fetchCocktailWithPokemon()
-                            viewModel.navigateTo(AppScreen.FIESTA)
-                        }
-                    )
-                }
+    LTPCTheme(darkTheme = isNightMode) {
+        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+            Box(modifier = Modifier.padding(innerPadding)) {
+                when (currentScreen) {
+                    AppScreen.HOME -> {
+                        HomeScreen(
+                            isNightMode = isNightMode,
+                            currentTime = currentTime,
+                            onToggleNightMode = { viewModel.toggleTimeOffset() },
+                            onNavigateToRecipe = {
+                                viewModel.fetchMealWithPokemon()
+                                viewModel.navigateTo(AppScreen.RECIPE)
+                            },
+                            onNavigateToFiesta = {
+                                viewModel.fetchCocktailWithPokemon()
+                                viewModel.navigateTo(AppScreen.FIESTA)
+                            }
+                        )
+                    }
 
-                AppScreen.RECIPE -> {
-                    RecipeScreen(
-                        recipe = recipeState,
-                        isLoading = isLoading,
-                        onFetchNext = { viewModel.fetchMealWithPokemon() },
-                        onBackToHome = { viewModel.navigateTo(AppScreen.HOME) }
-                    )
-                }
+                    AppScreen.RECIPE -> {
+                        RecipeScreen(
+                            isNightMode = isNightMode,
+                            recipe = recipeState,
+                            isLoading = isLoading,
+                            onFetchNext = { viewModel.fetchMealWithPokemon() },
+                            onBackToHome = { viewModel.navigateTo(AppScreen.HOME) }
+                        )
+                    }
 
-                AppScreen.FIESTA -> {
-                    FiestaScreen(
-                        recipe = recipeState,
-                        isLoading = isLoading,
-                        onFetchNext = { viewModel.fetchCocktailWithPokemon() },
-                        onBackToHome = { viewModel.navigateTo(AppScreen.HOME) }
-                    )
+                    AppScreen.FIESTA -> {
+                        FiestaScreen(
+                            recipe = recipeState,
+                            isLoading = isLoading,
+                            onFetchNext = { viewModel.fetchCocktailWithPokemon() },
+                            onBackToHome = { viewModel.navigateTo(AppScreen.HOME) }
+                        )
+                    }
                 }
             }
         }
