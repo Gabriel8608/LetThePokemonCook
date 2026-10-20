@@ -16,7 +16,8 @@ import kotlin.random.Random
 enum class AppScreen {
     HOME,
     RECIPE,
-    FIESTA
+    FIESTA,
+    POKEDEX
 }
 
 class MainViewModel : ViewModel() {
