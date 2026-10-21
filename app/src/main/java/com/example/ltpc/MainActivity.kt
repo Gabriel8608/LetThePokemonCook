@@ -6,28 +6,21 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.ltpc.ui.AppScreen
 import com.example.ltpc.ui.FiestaScreen
 import com.example.ltpc.ui.HomeScreen
 import com.example.ltpc.ui.MainViewModel
 import com.example.ltpc.ui.RecipeScreen
+import com.example.ltpc.ui.pokedex.FavoritosScreen
+import com.example.ltpc.ui.pokedex.PokemonDetailScreen
+import com.example.ltpc.ui.pokedex.PokemonListScreen
 import com.example.ltpc.ui.theme.LTPCTheme
 
 class MainActivity : ComponentActivity() {
@@ -96,29 +89,36 @@ fun MainApp(viewModel: MainViewModel) {
                     }
 
                     AppScreen.POKEDEX -> {
-                        // Vista temporal de la Pokédex (se implementarán las pantallas de la guía en los siguientes pasos)
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(24.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Pokédex UPB",
-                                fontSize = 24.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(
-                                text = "Paso 1 completado: Dependencias de Room agregadas.",
-                                fontSize = 16.sp
-                            )
-                            Spacer(modifier = Modifier.height(24.dp))
-                            Button(onClick = { viewModel.navigateTo(AppScreen.HOME) }) {
-                                Text("Volver al inicio")
+                        PokemonListScreen(
+                            onPokemonClick = { pokemon ->
+                                viewModel.verDetallePokemon(pokemon.nombre)
+                            },
+                            onVerFavoritos = {
+                                viewModel.navigateTo(AppScreen.FAVORITOS)
+                            },
+                            onVolver = {
+                                viewModel.navigateTo(AppScreen.HOME)
                             }
-                        }
+                        )
+                    }
+
+                    AppScreen.FAVORITOS -> {
+                        FavoritosScreen(
+                            onVolver = {
+                                viewModel.navigateTo(AppScreen.POKEDEX)
+                            },
+                            onPokemonClick = { pokemon ->
+                                viewModel.verDetallePokemon(pokemon.nombre)
+                            }
+                        )
+                    }
+
+                    AppScreen.DETALLE -> {
+                        PokemonDetailScreen(
+                            onVolver = {
+                                viewModel.navigateTo(AppScreen.POKEDEX)
+                            }
+                        )
                     }
                 }
             }

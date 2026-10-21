@@ -17,7 +17,9 @@ enum class AppScreen {
     HOME,
     RECIPE,
     FIESTA,
-    POKEDEX
+    POKEDEX,
+    FAVORITOS,
+    DETALLE
 }
 
 class MainViewModel : ViewModel() {
@@ -31,6 +33,9 @@ class MainViewModel : ViewModel() {
 
     private val _currentScreen = MutableLiveData(AppScreen.HOME)
     val currentScreen: LiveData<AppScreen> get() = _currentScreen
+
+    private val _selectedPokemonName = MutableLiveData<String>("1")
+    val selectedPokemonName: LiveData<String> get() = _selectedPokemonName
 
     private val _recipeState = MutableLiveData<RecipeUiModel?>()
     val recipeState: LiveData<RecipeUiModel?> get() = _recipeState
@@ -75,6 +80,11 @@ class MainViewModel : ViewModel() {
             _currentScreen.value = screen
             playBeeps()
         }
+    }
+
+    fun verDetallePokemon(nombre: String) {
+        _selectedPokemonName.value = nombre
+        navigateTo(AppScreen.DETALLE)
     }
 
     fun fetchMealWithPokemon() {
