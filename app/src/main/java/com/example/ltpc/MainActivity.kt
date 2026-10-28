@@ -14,13 +14,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import com.example.ltpc.ui.AppScreen
-import com.example.ltpc.ui.FiestaScreen
-import com.example.ltpc.ui.HomeScreen
+import com.example.ltpc.ui.screens.FiestaScreen
+import com.example.ltpc.ui.screens.HomeScreen
 import com.example.ltpc.ui.MainViewModel
-import com.example.ltpc.ui.RecipeScreen
-import com.example.ltpc.ui.pokedex.FavoritosScreen
-import com.example.ltpc.ui.pokedex.PokemonDetailScreen
-import com.example.ltpc.ui.pokedex.PokemonListScreen
+import com.example.ltpc.ui.screens.RecipeScreen
+import com.example.ltpc.ui.screens.pokedex.FavoritosScreen
+import com.example.ltpc.ui.screens.pokedex.PokemonDetailScreen
+import com.example.ltpc.ui.screens.pokedex.PokemonListScreen
 import com.example.ltpc.ui.theme.LTPCTheme
 
 class MainActivity : ComponentActivity() {

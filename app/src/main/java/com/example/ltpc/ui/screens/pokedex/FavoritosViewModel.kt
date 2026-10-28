@@ -1,10 +1,10 @@
-package com.example.ltpc.ui.pokedex
+package com.example.ltpc.ui.screens.pokedex
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ltpc.data.FavoritosRepository
-import com.example.ltpc.data.PokemonResumen
+import com.example.ltpc.data.repository.FavoritosRepository
+import com.example.ltpc.domain.PokemonResumen
 import com.example.ltpc.data.local.PokemonDatabase
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow

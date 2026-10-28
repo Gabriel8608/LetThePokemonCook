@@ -1,12 +1,12 @@
-package com.example.ltpc.ui.pokedex
+package com.example.ltpc.ui.screens.pokedex
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.example.ltpc.data.FavoritosRepository
-import com.example.ltpc.data.PokemonDetalle
-import com.example.ltpc.data.PokemonRepository
+import com.example.ltpc.data.repository.FavoritosRepository
+import com.example.ltpc.domain.PokemonDetalle
+import com.example.ltpc.data.repository.PokemonRepository
 import com.example.ltpc.data.local.PokemonDatabase
 import com.example.ltpc.util.Resultado
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,4 +1,4 @@
-package com.example.ltpc.utils
+package com.example.ltpc.util.helpers
 
 import java.text.SimpleDateFormat
 import java.util.Calendar

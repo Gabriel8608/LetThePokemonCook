@@ -1,4 +1,4 @@
-package com.example.ltpc.ui
+package com.example.ltpc.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

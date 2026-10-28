@@ -1,6 +1,9 @@
-package com.example.ltpc.data
+package com.example.ltpc.data.repository
 
 import com.example.ltpc.data.local.FavoritoDao
+import com.example.ltpc.domain.PokemonResumen
+import com.example.ltpc.domain.aEntidad
+import com.example.ltpc.domain.aResumen
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

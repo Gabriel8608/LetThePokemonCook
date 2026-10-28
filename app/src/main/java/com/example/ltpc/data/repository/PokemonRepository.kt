@@ -1,5 +1,8 @@
-package com.example.ltpc.data
+package com.example.ltpc.data.repository
 
+import com.example.ltpc.data.remote.PokeApiService
+import com.example.ltpc.domain.PokemonDetalle
+import com.example.ltpc.domain.PokemonResumen
 import com.example.ltpc.util.Resultado
 
 class PokemonRepository(private val apiService: PokeApiService = PokeApiService.create()) {

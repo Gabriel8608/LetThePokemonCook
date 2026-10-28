@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.ltpc.data.CocktailApiService
-import com.example.ltpc.data.MealApiService
-import com.example.ltpc.data.PokeApiService
-import com.example.ltpc.data.RecipeUiModel
-import com.example.ltpc.utils.BeepHelper
-import com.example.ltpc.utils.TimeHelper
+import com.example.ltpc.data.remote.CocktailApiService
+import com.example.ltpc.data.remote.MealApiService
+import com.example.ltpc.data.remote.PokeApiService
+import com.example.ltpc.domain.RecipeUiModel
+import com.example.ltpc.util.helpers.BeepHelper
+import com.example.ltpc.util.helpers.TimeHelper
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 

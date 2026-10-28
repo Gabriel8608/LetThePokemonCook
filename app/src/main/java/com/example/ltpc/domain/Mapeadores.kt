@@ -1,4 +1,4 @@
-package com.example.ltpc.data
+package com.example.ltpc.domain
 
 import com.example.ltpc.data.local.FavoritoEntity
 

@@ -1,4 +1,4 @@
-package com.example.ltpc.utils
+package com.example.ltpc.util.helpers
 
 import android.media.AudioAttributes
 import android.media.AudioFormat

@@ -1,0 +1,544 @@
+================================================================================
+DIAGRAMA DE CLASES - PROYECTO "LET THE POKEMON COOK" (LTPC)
+Estructura de paquetes y relaciones entre clases
+================================================================================
+
+================================================================================
+PAQUETE: com.example.ltpc
+================================================================================
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                            MainActivity                                      │
+│                       <<ComponentActivity>>                                  │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ - viewModel: MainViewModel (by viewModels())                                 │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + onCreate(savedInstanceState: Bundle?)                                      │
+│ + MainApp(viewModel: MainViewModel) <<Composable>>                           │
+└──────────────────────────────────────────────────────────────────────────────┘
+         │
+         │ usa
+         ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                    LTPCTheme <<Composable>>                                  │
+│                    (paquete ui.theme)                                        │
+└──────────────────────────────────────────────────────────────────────────────┘
+         │
+         │ renderiza según currentScreen
+         ▼
+   ┌─────────────┬──────────────┬──────────────┬──────────────┬──────────────┐
+   │  HOME       │  RECIPE      │  FIESTA      │  POKEDEX     │  FAVORITOS   │
+   │  ▼          │  ▼           │  ▼           │  ▼           │  ▼           │
+   │HomeScreen   │RecipeScreen  │FiestaScreen  │PokemonList   │Favoritos     │
+   │             │              │              │Screen        │Screen        │
+   └─────────────┴──────────────┴──────────────┴──────────────┴──────────────┘
+                                                      │
+                                                      ▼
+                                              ┌──────────────┐
+                                              │ DETALLE      │
+                                              │ PokemonDetail│
+                                              │ Screen       │
+                                              └──────────────┘
+
+
+================================================================================
+PAQUETE: com.example.ltpc.ui
+================================================================================
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                              MainViewModel                                   │
+│                              <<ViewModel>>                                   │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ - timeHelper: TimeHelper                                                     │
+│ - beepHelper: BeepHelper                                                     │
+│ - mealApi: MealApiService                                                    │
+│ - cocktailApi: CocktailApiService                                            │
+│ - pokeApi: PokeApiService                                                    │
+│ - _currentScreen: MutableLiveData<AppScreen>                                │
+│ - _selectedPokemonName: MutableLiveData<String>                              │
+│ - _recipeState: MutableLiveData<RecipeUiModel?>                              │
+│ - _isLoading: MutableLiveData<Boolean>                                       │
+│ - _isNightMode: MutableLiveData<Boolean>                                     │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + currentScreen: LiveData<AppScreen>                                         │
+│ + selectedPokemonName: LiveData<String>                                      │
+│ + recipeState: LiveData<RecipeUiModel?>                                      │
+│ + isLoading: LiveData<Boolean>                                               │
+│ + isNightMode: LiveData<Boolean>                                             │
+│ + playBeeps()                                                                │
+│ + updateMode()                                                               │
+│ + getFormattedCurrentTime(): String                                          │
+│ + toggleTimeOffset()                                                         │
+│ + navigateTo(screen: AppScreen)                                              │
+│ + verDetallePokemon(nombre: String)                                          │
+│ + fetchMealWithPokemon()                                                     │
+│ + fetchCocktailWithPokemon()                                                 │
+└──────────────────────────────────────────────────────────────────────────────┘
+         │
+         │ usa
+         ├──────────────────────────┬──────────────────────────┬────────────────┐
+         ▼                          ▼                          ▼                ▼
+   MealApiService            CocktailApiService          PokeApiService   TimeHelper
+   (data.remote)             (data.remote)               (data.remote)    BeepHelper
+                                                                         (util.helpers)
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                            AppScreen                                         │
+│                              <<enum>>                                        │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ HOME | RECIPE | FIESTA | POKEDEX | FAVORITOS | DETALLE                       │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+PAQUETE: com.example.ltpc.ui.screens
+================================================================================
+
+┌───────────────────────────────┐  ┌───────────────────────────────┐
+│         HomeScreen            │  │        RecipeScreen           │
+│       <<Composable>>          │  │       <<Composable>>          │
+├───────────────────────────────┤  ├───────────────────────────────┤
+│ + isNightMode: Boolean        │  │ + isNightMode: Boolean        │
+│ + currentTime: String         │  │ + recipe: RecipeUiModel?      │
+│ + onToggleNightMode: ()->Unit │  │ + isLoading: Boolean          │
+│ + onNavigateToRecipe: ()->Unit│  │ + onFetchNext: ()->Unit       │
+│ + onNavigateToFiesta: ()->Unit│  │ + onBackToHome: ()->Unit      │
+│ + onNavigateToPokedex: ()->Unit│ └───────────────────────────────┘
+└───────────────────────────────┘  ┌───────────────────────────────┐
+                                   │        FiestaScreen           │
+                                   │       <<Composable>>          │
+                                   ├───────────────────────────────┤
+                                   │ + recipe: RecipeUiModel?      │
+                                   │ + isLoading: Boolean          │
+                                   │ + onFetchNext: ()->Unit       │
+                                   │ + onBackToHome: ()->Unit      │
+                                   └───────────────────────────────┘
+                                            │
+                                            │ usa
+                                            ▼
+                                   ┌───────────────────────┐
+                                   │   RecipeUiModel       │
+                                   │   (domain)            │
+                                   └───────────────────────┘
+
+
+================================================================================
+PAQUETE: com.example.ltpc.ui.screens.pokedex
+================================================================================
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                          PokemonListScreen                                   │
+│                             <<Composable>>                                   │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + onPokemonClick: (PokemonResumen) -> Unit                                   │
+│ + onVerFavoritos: () -> Unit                                                 │
+│ + onVolver: () -> Unit                                                       │
+│ + viewModel: PokemonListViewModel = viewModel()                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+         │
+         │ usa
+         ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         PokemonListViewModel                                 │
+│                         <<AndroidViewModel>>                                 │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ - repositorio: PokemonRepository                                             │
+│ - favoritosRepositorio: FavoritosRepository                                  │
+│ - _estadoApi: MutableStateFlow<PokemonListUiState>                           │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + uiState: StateFlow<PokemonListUiState>                                     │
+│ + cargarMas()                                                                │
+│ + alternarFavorito(pokemon: PokemonResumen)                                  │
+└──────────────────────────────────────────────────────────────────────────────┘
+         │
+         │ produce
+         ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         PokemonListUiState                                   │
+│                            <<data class>>                                    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + pokemones: List<PokemonResumen>                                            │
+│ + cargando: Boolean                                                          │
+│ + error: String?                                                             │
+│ + hayMas: Boolean                                                            │
+│ + favoritosIds: Set<Int>                                                     │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                           PokemonCard                                        │
+│                          <<Composable>>                                      │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + pokemon: PokemonResumen                                                    │
+│ + esFavorito: Boolean                                                        │
+│ + onClick: () -> Unit                                                        │
+│ + onFavoritoClick: () -> Unit                                                │
+│ + modifier: Modifier                                                         │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                        PokemonDetailScreen                                   │
+│                           <<Composable>>                                     │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + onVolver: () -> Unit                                                       │
+│ + viewModel: PokemonDetailViewModel = viewModel()                            │
+└──────────────────────────────────────────────────────────────────────────────┘
+         │
+         │ usa
+         ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                       PokemonDetailViewModel                                 │
+│                        <<AndroidViewModel>>                                  │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ - repositorio: PokemonRepository                                             │
+│ - favoritosRepositorio: FavoritosRepository                                  │
+│ - nombre: String (SavedStateHandle)                                          │
+│ - _estadoApi: MutableStateFlow<PokemonDetailUiState>                         │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + uiState: StateFlow<PokemonDetailUiState>                                   │
+│ + cargar()                                                                   │
+│ + alternarFavorito()                                                         │
+│ + companion: ARG_NOMBRE = "nombre"                                           │
+└──────────────────────────────────────────────────────────────────────────────┘
+         │
+         │ produce
+         ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                       PokemonDetailUiState                                   │
+│                          <<data class>>                                      │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + detalle: PokemonDetalle?                                                   │
+│ + cargando: Boolean                                                          │
+│ + error: String?                                                             │
+│ + esFavorito: Boolean                                                        │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                          FavoritosScreen                                     │
+│                           <<Composable>>                                     │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + onVolver: () -> Unit                                                       │
+│ + onPokemonClick: (PokemonResumen) -> Unit                                   │
+│ + viewModel: FavoritosViewModel = viewModel()                                │
+└──────────────────────────────────────────────────────────────────────────────┘
+         │
+         │ usa
+         ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         FavoritosViewModel                                   │
+│                         <<AndroidViewModel>>                                 │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ - favoritosRepositorio: FavoritosRepository                                  │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + uiState: StateFlow<FavoritosUiState>                                       │
+│ + quitar(pokemon: PokemonResumen)                                            │
+└──────────────────────────────────────────────────────────────────────────────┘
+         │
+         │ produce
+         ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                          FavoritosUiState                                    │
+│                          <<data class>>                                      │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + favoritos: List<PokemonResumen>                                            │
+│ + cargando: Boolean                                                          │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+PAQUETE: com.example.ltpc.domain
+================================================================================
+
+┌──────────────────────────────────┐  ┌──────────────────────────────────────┐
+│         PokemonResumen          │  │         PokemonDetalle               │
+│         <<data class>>           │  │         <<data class>>               │
+├──────────────────────────────────┤  ├──────────────────────────────────────┤
+│ + id: Int                        │  │ + id: Int                            │
+│ + nombre: String                 │  │ + nombre: String                     │
+│ + imagenUrl: String              │  │ + imagenUrl: String                  │
+└──────────────────────────────────┘  │ + tipos: List<String>                │
+         ▲                            │ + peso: Int                          │
+         │ usa                        │ + altura: Int                        │
+         │                            ├──────────────────────────────────────┤
+         │                            │ + aResumen(): PokemonResumen         │
+         │                            └──────────────────────────────────────┘
+         │                                        │
+         │                                        │ produce
+         └────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                            RecipeUiModel                                     │
+│                            <<data class>>                                    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + title: String                                                              │
+│ + instructions: String                                                       │
+│ + recipeImageUrl: String                                                     │
+│ + pokemonName: String                                                        │
+│ + pokemonImageUrl: String                                                    │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                            Mapeadores.kt                                     │
+│                       (funciones de extensión)                               │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + FavoritoEntity.aResumen(): PokemonResumen                                  │
+│ + PokemonResumen.aEntidad(): FavoritoEntity                                  │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+PAQUETE: com.example.ltpc.data.remote
+================================================================================
+
+┌───────────────────────────────┐  ┌───────────────────────────────┐
+│       MealApiService          │  │     CocktailApiService        │
+│         <<interface>>         │  │         <<interface>>         │
+├───────────────────────────────┤  ├───────────────────────────────┤
+│ + getRandomMeal():            │  │ + getRandomCocktail():        │
+│     MealApiResponse           │  │     MealApiResponse           │
+├───────────────────────────────┤  ├───────────────────────────────┤
+│ + companion create():         │  │ + companion create():         │
+│     MealApiService            │  │     CocktailApiService        │
+│   (baseUrl: themealdb.com)    │  │   (baseUrl: thecocktaildb.com)│
+└───────────────────────────────┘  └───────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                            PokeApiService                                    │
+│                             <<interface>>                                    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + getPokemon(id: Int): PokemonApiResponse                                    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + companion create(): PokeApiService                                         │
+│   (baseUrl: pokeapi.co)                                                      │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌───────────────────────────────┐  ┌───────────────────────────────┐
+│        MealApiResponse        │  │         MealDto               │
+│         <<data class>>        │  │        <<data class>>         │
+├───────────────────────────────┤  ├───────────────────────────────┤
+│ + meals: List<MealDto>?       │  │ + strMeal: String?            │
+└───────────────────────────────┘  │ + strInstructions: String?    │
+         │                         │ + strMealThumb: String?       │
+         │ contiene                └───────────────────────────────┘
+         ▼
+   List<MealDto>
+
+┌───────────────────────────────┐  ┌───────────────────────────────┐
+│     PokemonApiResponse        │  │         SpritesDto            │
+│         <<data class>>        │  │        <<data class>>         │
+├───────────────────────────────┤  ├───────────────────────────────┤
+│ + name: String                │  │ + front_default: String?      │
+│ + sprites: SpritesDto         │  └───────────────────────────────┘
+└───────────────────────────────┘
+         │
+         │ contiene
+         ▼
+    SpritesDto
+
+
+================================================================================
+PAQUETE: com.example.ltpc.data.repository
+================================================================================
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                          PokemonRepository                                   │
+│                          <<class>>                                           │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ - apiService: PokeApiService                                                 │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + obtenerPokemones(limite: Int, desplazamiento: Int):                        │
+│       Resultado<List<PokemonResumen>>                                        │
+│ + obtenerDetalle(nombreOId: String):                                         │
+│       Resultado<PokemonDetalle>                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+         │
+         │ usa
+         ▼
+   PokeApiService ───────► devuelve PokemonApiResponse
+                                 │
+                                 │ mapea a
+                                 ▼
+                         PokemonResumen / PokemonDetalle
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                         FavoritosRepository                                  │
+│                          <<class>>                                           │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ - dao: FavoritoDao                                                           │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + observarFavoritos(): Flow<List<PokemonResumen>>                            │
+│ + observarIds(): Flow<Set<Int>>                                              │
+│ + agregar(pokemon: PokemonResumen)                                           │
+│ + quitar(id: Int)                                                            │
+└──────────────────────────────────────────────────────────────────────────────┘
+         │
+         │ usa
+         ▼
+   FavoritoDao (data.local)
+
+
+================================================================================
+PAQUETE: com.example.ltpc.data.local
+================================================================================
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                            PokemonDatabase                                   │
+│                          <<RoomDatabase>>                                    │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + favoritoDao(): FavoritoDao                                                 │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + companion obtener(context: Context): PokemonDatabase (Singleton)           │
+└──────────────────────────────────────────────────────────────────────────────┘
+         │
+         │ provee
+         ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                            FavoritoDao                                       │
+│                              <<Dao>>                                         │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + observarFavoritos(): Flow<List<FavoritoEntity>>                            │
+│ + observarIdsFavoritos(): Flow<List<Int>>                                    │
+│ + insertar(favorito: FavoritoEntity)                                         │
+│ + eliminarPorId(id: Int)                                                     │
+└──────────────────────────────────────────────────────────────────────────────┘
+         │
+         │ opera sobre
+         ▼
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                          FavoritoEntity                                      │
+│                            <<Entity>>                                        │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ @PrimaryKey                                                                  │
+│ + id: Int                                                                    │
+│ + nombre: String                                                             │
+│ + imagenUrl: String                                                          │
+│ + agregadoEn: Long = System.currentTimeMillis()                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+PAQUETE: com.example.ltpc.util
+================================================================================
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                            Resultado<out T>                                  │
+│                          <<sealed interface>>                                │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + Exito<out T>(datos: T) : Resultado<T>                                      │
+│ + Error(mensaje: String, causa: Throwable?) : Resultado<Nothing>             │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+PAQUETE: com.example.ltpc.util.helpers
+================================================================================
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                             BeepHelper                                       │
+│                            <<class>>                                         │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + playBeepSequence() <<suspend>>                                             │
+│   Genera 3 beeps de 2000 Hz con AudioTrack                                   │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                             TimeHelper                                       │
+│                            <<class>>                                         │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + hourOffset: Int = 0                                                        │
+├──────────────────────────────────────────────────────────────────────────────┤
+│ + getCurrentAdjustedHour(): Int                                              │
+│ + isNightTime(): Boolean                                                     │
+│ + toggleOffset()                                                             │
+│ + getFormattedCurrentTime(): String                                          │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+PAQUETE: com.example.ltpc.ui.theme
+================================================================================
+
+┌───────────────────────────────┐  ┌───────────────────────────────┐
+│          Theme.kt             │  │          Color.kt             │
+│    LTPCTheme <<Composable>>   │  │   Purple80, PurpleGrey80,     │
+│  (darkTheme: Boolean)         │  │   Pink80, Purple40, etc.      │
+└───────────────────────────────┘  └───────────────────────────────┘
+                                   ┌───────────────────────────────┐
+                                   │          Type.kt              │
+                                   │   Typography (bodyLarge)      │
+                                   └───────────────────────────────┘
+
+
+================================================================================
+DIAGRAMA DE DEPENDENCIAS ENTRE CAPAS
+================================================================================
+
+    ┌─────────────────────────────────────────────────────────────┐
+    │                      PRESENTACIÓN (UI)                      │
+    │  MainActivity → MainApp → Screens (Composables)             │
+    │  ViewModels (MainViewModel, PokemonListViewModel,           │
+    │              PokemonDetailViewModel, FavoritosViewModel)    │
+    └───────────────────────────┬─────────────────────────────────┘
+                                │
+                                │ depende de
+                                ▼
+    ┌─────────────────────────────────────────────────────────────┐
+    │                      DOMINIO (domain)                       │
+    │  PokemonResumen, PokemonDetalle, RecipeUiModel, Mapeadores  │
+    └───────────────────────────┬─────────────────────────────────┘
+                                │
+                                │ depende de
+                                ▼
+    ┌─────────────────────────────────────────────────────────────┐
+    │                    DATOS (data)                             │
+    │  ┌──────────────┐  ┌──────────────┐  ┌───────────────────┐  │
+    │  │   remote     │  │  repository  │  │      local        │  │
+    │  │ (Retrofit    │◄─┤ (PokemonRepo │─►│ (Room: Database,  │  │
+    │  │  APIs + DTOs)│  │  Favoritos)  │  │  DAO, Entity)     │  │
+    │  └──────────────┘  └──────────────┘  └───────────────────┘  │
+    └─────────────────────────────────────────────────────────────┘
+
+    ┌─────────────────────────────────────────────────────────────┐
+    │                    UTILIDADES (util)                        │
+    │  Resultado<T>, BeepHelper, TimeHelper                       │
+    └─────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+FLUJOS PRINCIPALES
+================================================================================
+
+FLUJO "RECETA ALEATORIA":
+  MainActivity → MainViewModel.fetchMealWithPokemon()
+    → MealApiService.getRandomMeal()  [HTTP themealdb.com]
+    → PokeApiService.getPokemon(random)  [HTTP pokeapi.co]
+    → RecipeUiModel
+    → LiveData<RecipeUiModel?> → RecipeScreen
+
+FLUJO "POKEDEX":
+  MainActivity → PokemonListScreen
+    → PokemonListViewModel.uiState (StateFlow)
+    → PokemonRepository.obtenerPokemones()
+    → PokeApiService.getPokemon(1..20)  [HTTP pokeapi.co]
+    → List<PokemonResumen>
+    → PokemonListUiState
+
+FLUJO "FAVORITOS":
+  PokemonCard.onFavoritoClick
+    → PokemonListViewModel.alternarFavorito(pokemon)
+    → FavoritosRepository.agregar/quitar(id)
+    → FavoritoDao (Room)  ⇄  FavoritoEntity  ⇄  SQLite "pokedex.db"
+    → Flow<List<Int>> → favoritosIds → UI actualiza corazones
+
+FLUJO "DETALLE":
+  PokemonListScreen → onPokemonClick(pokemon)
+    → MainViewModel.verDetallePokemon(nombre)
+    → AppScreen.DETALLE
+    → PokemonDetailScreen → PokemonDetailViewModel
+    → PokemonRepository.obtenerDetalle(nombre)
+    → PokeApiService.getPokemon(id)
+    → PokemonDetalle
+    → PokemonDetailUiState
+
+================================================================================
+FIN DEL DIAGRAMA
+================================================================================

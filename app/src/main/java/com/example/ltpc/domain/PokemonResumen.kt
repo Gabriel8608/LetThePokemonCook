@@ -1,4 +1,4 @@
-package com.example.ltpc.data
+package com.example.ltpc.domain
 
 data class PokemonResumen(
     val id: Int,

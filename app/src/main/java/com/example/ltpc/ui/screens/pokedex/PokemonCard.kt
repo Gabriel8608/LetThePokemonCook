@@ -1,4 +1,4 @@
-package com.example.ltpc.ui.pokedex
+package com.example.ltpc.ui.screens.pokedex
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.ltpc.data.PokemonResumen
+import com.example.ltpc.domain.PokemonResumen
 
 @Composable
 fun PokemonCard(
